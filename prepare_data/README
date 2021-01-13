@@ -1,0 +1,15 @@
+embedding.py:
+	# japanese word (seq) -> vector in embedding space
+	python embedding.py type1_clean
+	python embedding.py type1_noisy
+	python embedding.py type2
+
+convert2root:
+	# executable 'convert2root.cpp'
+	# vector in embedding space -> ttree (root file)
+	# assuming two input files in current dir: 'type1_clean.encoded' and 'type2.encoded'
+	./convert2root
+
+generate_fake_verb.py:
+	# generate (simulate) 100000 verbs according to preset rules
+	python generate_fake_verb.py
