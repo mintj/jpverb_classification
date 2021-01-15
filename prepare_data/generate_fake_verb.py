@@ -60,10 +60,10 @@ def gen_verb_type3(length):
 
     return root + tail
 
-opf1a = open('type1_clean.encoded', 'w')
-opf1b = open('type1_noisy.encoded', 'w')
-opf2  = open('type2.encoded', 'w')
-opf3  = open('type3.encoded', 'w')
+opf1a = open('type1_clean.hirakana', 'w')
+opf1b = open('type1_noisy.hirakana', 'w')
+opf2  = open('type2.hirakana', 'w')
+opf3  = open('type3.hirakana', 'w')
 
 for i in range(100000):
     root_length = random.randint(1, 5)

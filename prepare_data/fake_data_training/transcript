@@ -1,0 +1,5 @@
+python ../embedding.py type1_clean
+python ../embedding.py type1_noisy
+python ../embedding.py type2
+python ../embedding.py type3
+../convert2root

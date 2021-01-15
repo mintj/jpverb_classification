@@ -1,6 +1,6 @@
-void tmva()
+void tmva_test()
 {
-	TFile * f = TFile::Open("../prepare_data/fake_data_training/jpverb.root");
+	TFile * f = TFile::Open("../prepare_data/real_data/jpverb.root");
 	TTree * tree1 = (TTree *)f->Get("type1");
 	TTree * tree2 = (TTree *)f->Get("type2");
 
@@ -8,28 +8,33 @@ void tmva()
 	TFile * outfile = TFile::Open(outfilename, "recreate");
 
 	TMVA::Factory * factory = new TMVA::Factory("jpvc", outfile,
-			"!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification");
+			"!V:!Silent:Color:DrawProgressBar:Transformations=I;D:AnalysisType=Classification");
 
 	TMVA::DataLoader * dataloader=new TMVA::DataLoader("dataset");
 
 	dataloader->AddSignalTree(tree1,     1);
 	dataloader->AddBackgroundTree(tree2, 1);
 	
-	dataloader->AddVariable("x[4]%10", 'F');
-	dataloader->AddVariable("x[5]/10", 'F');
+	dataloader->AddVariable("x[0]", 'F');
+	dataloader->AddVariable("x[1]", 'F');
+	dataloader->AddVariable("x[2]", 'F');
+	dataloader->AddVariable("x[3]", 'F');
+	dataloader->AddVariable("x[4]", 'F');
+	dataloader->AddVariable("x[5]", 'F');
+	dataloader->AddVariable("len", 'F');
 
 	dataloader->PrepareTrainingAndTestTree( "", "SplitMode=Random:NormMode=NumEvents:!V" );
 	//dataloader->PrepareTrainingAndTestTree( "", "nTrain_Signal=5000:nTrain_Background=5000:nTest_Signal=5000:nTest_Background=5000:SplitMode=Random:NormMode=NumEvents:!V" );
 	
-	factory->BookMethod(dataloader, TMVA::Types::kLikelihood, "Likelihood",
-		"H:!V:TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmoothBkg[1]=10:NSmooth=1:NAvEvtPerBin=50");
+	//factory->BookMethod(dataloader, TMVA::Types::kLikelihood, "Likelihood",
+	//	"H:!V:TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmoothBkg[1]=10:NSmooth=1:NAvEvtPerBin=50");
 
-	factory->BookMethod(dataloader, TMVA::Types::kKNN, "KNN",
-		"H:nkNN=20:ScaleFrac=0.8:SigmaFact=1.0:Kernel=Gaus:UseKernel=F:UseWeight=T:!Trim");
+	//factory->BookMethod(dataloader, TMVA::Types::kKNN, "KNN",
+	//	"H:nkNN=20:ScaleFrac=0.8:SigmaFact=1.0:Kernel=Gaus:UseKernel=F:UseWeight=T:!Trim");
 	
 	factory->BookMethod(dataloader, TMVA::Types::kMLP, "MLP",
 		"H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:!UseRegulator");
-	factory->BookMethod(dataloader, TMVA::Types::kMLP, "MLP_L2Reg",
+	factory->BookMethod(dataloader, TMVA::Types::kMLP, "MLPBNN",
 		"H:!V:NeuronType=tanh:VarTransform=N:NCycles=60:HiddenLayers=N+5:TestRate=5:UseRegulator" );
 
 	TString layoutString_COMP ("Layout=RELU|100,RELU|100,RELU|100,LINEAR");
@@ -37,30 +42,36 @@ void tmva()
 	TString layoutString_SIMP ("Layout=RELU|N,RELU|5,SIGMOID");
 	//TString layoutString ("Layout=TANH|N,TANH|5,LINEAR");
 	TString training0_COMP("LearningRate=1e-1,Momentum=0.9,Repetitions=1,"
-		"ConvergenceSteps=20,BatchSize=256,TestRepetitions=10,"
+		//"ConvergenceSteps=20,BatchSize=256,TestRepetitions=10,"
+		"ConvergenceSteps=20,BatchSize=25,TestRepetitions=10,"
 		"WeightDecay=1e-4,Regularization=L2,"
 		"DropConfig=0.0+0.5+0.5+0.5, Multithreading=True");
 	TString training1_COMP("LearningRate=1e-2,Momentum=0.9,Repetitions=1,"
-		"ConvergenceSteps=20,BatchSize=256,TestRepetitions=10,"
+		//"ConvergenceSteps=20,BatchSize=256,TestRepetitions=10,"
+		"ConvergenceSteps=20,BatchSize=25,TestRepetitions=10,"
 		"WeightDecay=1e-4,Regularization=L2,"
 		"DropConfig=0.0+0.3+0.0+0.0, Multithreading=True");
 	TString training2_COMP("LearningRate=1e-3,Momentum=0.0,Repetitions=1,"
-		"ConvergenceSteps=20,BatchSize=256,TestRepetitions=10,"
+		//"ConvergenceSteps=20,BatchSize=256,TestRepetitions=10,"
+		"ConvergenceSteps=20,BatchSize=25,TestRepetitions=10,"
 		"WeightDecay=1e-4,Regularization=L2,"
 		"DropConfig=0.0+0.1+0.0+0.0, Multithreading=True");
 	TString trainingStrategyString_COMP ("TrainingStrategy=");
 	trainingStrategyString_COMP += training0_COMP + "|" + training1_COMP + "|" + training2_COMP;
 	
 	TString training0_SIMP("LearningRate=1e-1,Momentum=0.9,Repetitions=1,"
-		"ConvergenceSteps=20,BatchSize=256,TestRepetitions=10,"
+		//"ConvergenceSteps=20,BatchSize=256,TestRepetitions=10,"
+		"ConvergenceSteps=20,BatchSize=25,TestRepetitions=10,"
 		"WeightDecay=1e-4,Regularization=L2,"
 		"DropConfig=0.0+0.0+0.0+0.0, Multithreading=True");
 	TString training1_SIMP("LearningRate=1e-2,Momentum=0.9,Repetitions=1,"
-		"ConvergenceSteps=20,BatchSize=256,TestRepetitions=10,"
+		//"ConvergenceSteps=20,BatchSize=256,TestRepetitions=10,"
+		"ConvergenceSteps=20,BatchSize=25,TestRepetitions=10,"
 		"WeightDecay=1e-4,Regularization=L2,"
 		"DropConfig=0.0+0.0+0.0+0.0, Multithreading=True");
 	TString training2_SIMP("LearningRate=1e-3,Momentum=0.0,Repetitions=1,"
-		"ConvergenceSteps=20,BatchSize=256,TestRepetitions=10,"
+		//"ConvergenceSteps=20,BatchSize=256,TestRepetitions=10,"
+		"ConvergenceSteps=20,BatchSize=25,TestRepetitions=10,"
 		"WeightDecay=1e-4,Regularization=L2,"
 		"DropConfig=0.0+0.0+0.0+0.0, Multithreading=True");
 	TString trainingStrategyString_SIMP ("TrainingStrategy=");
@@ -81,7 +92,7 @@ void tmva()
 	TString cpuOptions_COMP = dnnOptions_COMP + ":Architecture=CPU";
 	TString cpuOptions_SIMP = dnnOptions_SIMP + ":Architecture=CPU";
 	
-	//factory->BookMethod(dataloader, TMVA::Types::kDNN, "DNN_ReLU", cpuOptions_COMP);
+	factory->BookMethod(dataloader, TMVA::Types::kDNN, "DNN", cpuOptions_COMP);
 	//factory->BookMethod(dataloader, TMVA::Types::kDNN, "DNN_ReLU_mlp", cpuOptions_SIMP);
 	
 	factory->BookMethod(dataloader, TMVA::Types::kBDT, "BDTG",
@@ -95,7 +106,7 @@ void tmva()
 	//factory->BookMethod(dataloader, TMVA::Types::kBDT, "BDT_CE",
 	//	"!H:!V:NTrees=1000:MinNodeSize=0.3%:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:UseBaggedBoost:BaggedSampleFraction=0.5:SeparationType=CrossEntropy:nCuts=20");
 	//
-	//factory->BookMethod(dataloader, TMVA::Types::kSVM, "SVM_LARGE", "Gamma=0.25:Tol=0.001:VarTransform=Norm" );
+	factory->BookMethod(dataloader, TMVA::Types::kSVM, "SVM", "Gamma=0.25:Tol=0.001:VarTransform=Norm" );
 	//factory->BookMethod(dataloader, TMVA::Types::kSVM, "SVM_SMALL", "Gamma=25.0:Tol=0.001:VarTransform=Norm" );
 	
 	factory->TrainAllMethods();

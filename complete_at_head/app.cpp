@@ -35,8 +35,6 @@ void copy_vals(float * fx, float & flen, int * x, int len)
 	for (int i = 0; i < 6; ++i) {
 		fx[i] = x[i];
 	}
-	fx[4] = x[4]%10;
-	fx[5] = x[5]/10;
 	flen = len;
 }
 		
@@ -69,16 +67,20 @@ void app( TString myMethodList = "" )
 	// - the variable names MUST corresponds in name and type to those given in the weight file(s) used
 	float fx[6];
 	float flen;
-	reader->AddVariable("x[4]%10", fx+4);
-	reader->AddVariable("x[5]/10", fx+5);
-	//reader->AddVariable("len",  &flen);
+	reader->AddVariable("x[0]", fx);
+	reader->AddVariable("x[1]", fx+1);
+	reader->AddVariable("x[2]", fx+2);
+	reader->AddVariable("x[3]", fx+3);
+	reader->AddVariable("x[4]", fx+4);
+	reader->AddVariable("x[5]", fx+5);
+	reader->AddVariable("len",  &flen);
    
 	TFile * f1 = TFile::Open("../prepare_data/fake_data_test/jpverb.root");
 	TFile * f2 = TFile::Open("../prepare_data/real_data/jpverb.root");
-	TTree * t1a = (TTree *)f1->Get("type1");
-	TTree * t1b = (TTree *)f1->Get("type2");
-	TTree * t2a = (TTree *)f2->Get("type1");
-	TTree * t2b = (TTree *)f2->Get("type2");
+	TTree * t1a = (TTree *)f1->Get("type1_alt");
+	TTree * t1b = (TTree *)f1->Get("type2_alt");
+	TTree * t2a = (TTree *)f2->Get("type1_alt");
+	TTree * t2b = (TTree *)f2->Get("type2_alt");
 	int x[6], len;
 	t1a->SetBranchAddress("x",   x);
 	t1a->SetBranchAddress("len", &len);

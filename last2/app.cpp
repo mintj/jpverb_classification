@@ -35,8 +35,6 @@ void copy_vals(float * fx, float & flen, int * x, int len)
 	for (int i = 0; i < 6; ++i) {
 		fx[i] = x[i];
 	}
-	fx[4] = x[4]%10;
-	fx[5] = x[5]/10;
 	flen = len;
 }
 		
@@ -69,8 +67,8 @@ void app( TString myMethodList = "" )
 	// - the variable names MUST corresponds in name and type to those given in the weight file(s) used
 	float fx[6];
 	float flen;
-	reader->AddVariable("x[4]%10", fx+4);
-	reader->AddVariable("x[5]/10", fx+5);
+	reader->AddVariable("x[4]", fx+4);
+	reader->AddVariable("x[5]", fx+5);
 	//reader->AddVariable("len",  &flen);
    
 	TFile * f1 = TFile::Open("../prepare_data/fake_data_test/jpverb.root");

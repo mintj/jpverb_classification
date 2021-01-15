@@ -15,8 +15,8 @@ void tmva()
 	dataloader->AddSignalTree(tree1,     1);
 	dataloader->AddBackgroundTree(tree2, 1);
 	
-	dataloader->AddVariable("x[4]%10", 'F');
-	dataloader->AddVariable("x[5]/10", 'F');
+	dataloader->AddVariable("x[4]", 'F');
+	dataloader->AddVariable("x[5]", 'F');
 
 	dataloader->PrepareTrainingAndTestTree( "", "SplitMode=Random:NormMode=NumEvents:!V" );
 	//dataloader->PrepareTrainingAndTestTree( "", "nTrain_Signal=5000:nTrain_Background=5000:nTest_Signal=5000:nTest_Background=5000:SplitMode=Random:NormMode=NumEvents:!V" );
