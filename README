@@ -1,5 +1,32 @@
-below dirs contain test codes for various conditions
+i. below dirs contain test codes for various conditions
 
-./
+(rootdir)
 |-- nomial
+|-- last2
 |-- last2_trans
+|-- head
+|-- head_wo_len
+|-- random
+
+
+
+
+ii. in each dir, one may find those files:
+
+(rootdir)
+|--(workdir)
+       |-- tmva.cpp     # containing training and testing for Likelihood/KNN/MLP/BDT
+       |-- dnn.cpp      # containing training and testing for DNN
+       |-- get_cut.cpp  # this macro will find the best working point for each algorithm according to a certain criterion
+       |-- app.cpp      # apply training result to a test sample (100K+100K) and the sample of REAL japanese verbs (323+177)
+
+workflow:
+  root -l tmva.cpp
+  root -l dnn.cpp
+  root -l get_cut.cpp
+  root -l app.cpp
+
+
+
+
+iii. after having all conditions be studied, go back to (rootdir), run the "draw_comparison.cpp" macro to get plots for performance
